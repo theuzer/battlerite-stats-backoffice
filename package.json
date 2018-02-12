@@ -1,0 +1,28 @@
+{
+  "name": "game-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nf start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theuzer/game-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/theuzer/game-app/issues"
+  },
+  "homepage": "https://github.com/theuzer/game-app#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "foreman": "^2.0.0",
+    "iniparser": "^1.0.5",
+    "mongoose": "^5.0.4",
+    "mssql": "^4.1.0",
+    "ontime": "0.0.4"
+  }
+}
