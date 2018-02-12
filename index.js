@@ -100,6 +100,20 @@ app.get('/', (req, res) => {
 app.use('/api', routes);
 
 ontime({
+  cycle: ['15:26:30'],
+}, (ot) => {
+  new sql.Request(dataConnection).query(queries.getChampionWinrateByDate(2018, 2, 5))
+    .then((response) => {
+      processResponse(response.recordset, 2018, 2, 5);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  ot.done();
+});
+
+/*
+ontime({
   cycle: ['00:01:00'],
 }, (ot) => {
   const date = new Date();
@@ -115,3 +129,4 @@ ontime({
     });
   ot.done();
 });
+*/
