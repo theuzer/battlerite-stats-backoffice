@@ -1,7 +1,36 @@
 const mongoose = require('mongoose');
+const iniparser = require('iniparser');
 
 const Stats = require('../models/stats');
 const Log = require('../models/log');
+const gameplay = require('../static/assets/gameplay.json');
+
+const english = iniparser.parseSync('./static/assets/English.ini');
+
+const getChampionName = championCode => english[gameplay.characters.filter(x => x.typeID === championCode)[0].name];
+
+const handleMatchType = (matchType, matchTypeStr) => {
+  return {
+    [matchTypeStr]: {
+      wins: matchType.wins,
+      losses: matchType.losses,
+      totalGames: matchType.wins + matchType.losses,
+      winRate: matchType.wins / (matchType.wins + matchType.losses),
+    },
+  };
+};
+
+const handleGetStatsByDate = (dataIn) => {
+  return dataIn.map((record) => {
+    return {
+      championName: getChampionName(record.championCode),
+      trioRanked: handleMatchType(record.trioRanked, 'trioRanked'),
+      duoRanked: handleMatchType(record.duoRanked, 'duoRanked'),
+      trioNormal: handleMatchType(record.trioNormal, 'trioNormal'),
+      duoNormal: handleMatchType(record.duoNormal, 'duoNormal'),
+    };
+  });
+};
 
 exports.createStats = (stats, logId) => {
   const newStats = new Stats();
@@ -24,7 +53,8 @@ exports.getStatsByDate = (req, res) => {
     .then((log) => {
       Stats.find({ log: mongoose.Types.ObjectId(log._id) }).exec()
         .then((stats) => {
-          res.json(stats);
+          const dataOut = handleGetStatsByDate(stats);
+          res.json(dataOut);
         });
     });
 };
