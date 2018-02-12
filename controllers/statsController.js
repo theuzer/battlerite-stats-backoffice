@@ -9,14 +9,12 @@ const english = iniparser.parseSync('./static/assets/English.ini');
 
 const getChampionName = championCode => english[gameplay.characters.filter(x => x.typeID === championCode)[0].name];
 
-const handleMatchType = (matchType, matchTypeStr) => {
+const handleMatchType = (matchType) => {
   return {
-    [matchTypeStr]: {
-      wins: matchType.wins,
-      losses: matchType.losses,
-      totalGames: matchType.wins + matchType.losses,
-      winRate: matchType.wins / (matchType.wins + matchType.losses),
-    },
+    wins: matchType.wins,
+    losses: matchType.losses,
+    totalGames: matchType.wins + matchType.losses,
+    winRate: matchType.wins / (matchType.wins + matchType.losses),
   };
 };
 
@@ -24,10 +22,10 @@ const handleGetStatsByDate = (dataIn) => {
   return dataIn.map((record) => {
     return {
       championName: getChampionName(record.championCode),
-      trioRanked: handleMatchType(record.trioRanked, 'trioRanked'),
-      duoRanked: handleMatchType(record.duoRanked, 'duoRanked'),
-      trioNormal: handleMatchType(record.trioNormal, 'trioNormal'),
-      duoNormal: handleMatchType(record.duoNormal, 'duoNormal'),
+      trioRanked: handleMatchType(record.trioRanked),
+      duoRanked: handleMatchType(record.duoRanked),
+      trioNormal: handleMatchType(record.trioNormal),
+      duoNormal: handleMatchType(record.duoNormal),
     };
   });
 };
