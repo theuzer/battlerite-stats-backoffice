@@ -7,6 +7,10 @@ const gameplay = require('../static/assets/gameplay.json');
 
 const english = iniparser.parseSync('./static/assets/English.ini');
 
+const noResultsFound = {
+  response: 'no results found',
+};
+
 const getChampionName = championCode => english[gameplay.characters.filter(x => x.typeID === championCode)[0].name];
 
 const handleMatchType = (matchType) => {
@@ -49,11 +53,17 @@ exports.createStats = (stats, logId) => {
 exports.getStatsByDate = (req, res) => {
   Log.findOne({ year: req.query.year, month: req.query.month, day: req.query.day }).exec()
     .then((log) => {
-      Stats.find({ log: mongoose.Types.ObjectId(log._id) }).exec()
-        .then((stats) => {
-          const dataOut = handleGetStatsByDate(stats);
-          res.json(dataOut);
-        });
+      if (log !== null) {
+        Stats.find({ log: mongoose.Types.ObjectId(log._id) }).exec()
+          .then((stats) => {
+            const dataOut = handleGetStatsByDate(stats);
+            res.json(dataOut);
+          });
+      }
+      res.json(noResultsFound);
+    })
+    .catch((err) => {
+      console.log(err);
     });
 };
 
