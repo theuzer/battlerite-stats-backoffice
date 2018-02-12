@@ -59,8 +59,9 @@ exports.getStatsByDate = (req, res) => {
             const dataOut = handleGetStatsByDate(stats);
             res.json(dataOut);
           });
+      } else {
+        res.json(noResultsFound);
       }
-      res.json(noResultsFound);
     })
     .catch((err) => {
       console.log(err);
