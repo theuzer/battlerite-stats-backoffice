@@ -102,6 +102,7 @@ app.get('/', (req, res) => {
   console.log('a');
 });
 
+/*
 ontime({
   cycle: ['15:26:30'],
 }, (ot) => {
@@ -114,6 +115,7 @@ ontime({
     });
   ot.done();
 });
+*/
 
 /*
 ontime({
