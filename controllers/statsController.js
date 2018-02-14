@@ -1,17 +1,12 @@
 const mongoose = require('mongoose');
-const iniparser = require('iniparser');
 
 const Stats = require('../models/stats');
 const Log = require('../models/log');
-const gameplay = require('../static/assets/gameplay.json');
-
-const english = iniparser.parseSync('./static/assets/English.ini');
+const utils = require('./utils');
 
 const noResultsFound = {
   response: 'no results found',
 };
-
-const getChampionName = championCode => english[gameplay.characters.filter(x => x.typeID === championCode)[0].name];
 
 const handleMatchType = matchType => ({
   wins: matchType.wins,
@@ -21,7 +16,7 @@ const handleMatchType = matchType => ({
 });
 
 const handleGetStatsByDate = dataIn => (dataIn.map(record => ({
-  championName: getChampionName(record.championCode),
+  championName: utils.getChampionName(record.championCode),
   trioRanked: handleMatchType(record.trioRanked),
   duoRanked: handleMatchType(record.duoRanked),
   trioNormal: handleMatchType(record.trioNormal),

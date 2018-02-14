@@ -3,6 +3,7 @@ const path = require('path');
 const sql = require('mssql');
 const iniparser = require('iniparser');
 const ontime = require('ontime');
+const https = require('https');
 
 const dataConnection = require('./database/index').dataConnection;
 const queries = require('./database/queries');
@@ -11,6 +12,12 @@ const logController = require('./controllers/logController');
 const statsController = require('./controllers/statsController');
 const routes = require('./routes/index');
 require('./database/index');
+
+dataConnection.connect()
+  .then(() => {})
+  .catch((err) => {
+    console.log(err);
+  });
 
 const english = iniparser.parseSync('./static/assets/English.ini');
 
@@ -80,18 +87,20 @@ const processResponse = (recordSet, year, month, day) => {
     });
 };
 
-dataConnection.connect()
-  .then(() => {})
-  .catch((err) => {
-    console.log(err);
-  });
+app.use('/api', routes);
+
+// KEEP APP AWAKE
+if (process.env.HEROKU_TIMER_CREATE === 'TRUE') {
+  setInterval(() => {
+    https.get(process.env.HEROKU_APP_URL);
+    console.log('Pinged application');
+  }, parseInt(process.env.HEROKU_APP_TIMER, 10));
+}
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/index.html'));
   console.log('a');
 });
-
-app.use('/api', routes);
 
 ontime({
   cycle: ['15:26:30'],

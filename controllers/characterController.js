@@ -6,9 +6,9 @@ const dataConnection = require('../database/index').dataConnection;
 exports.getCharacterHistory = (req, res) => {
   // validate req ?
 
-  new sql.Request(dataConnection).query(queries.getCharacterHistory(req.query.playerId))
+  new sql.Request(dataConnection).query(queries.getCharacterHistory(req.query.playerId, req.query.page))
     .then((response) => {
-      res.json(response);
+      res.json(response.recordset);
     })
     .catch((err) => {
       res.json(err);
