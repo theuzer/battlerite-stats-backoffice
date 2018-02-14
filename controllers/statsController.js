@@ -13,26 +13,20 @@ const noResultsFound = {
 
 const getChampionName = championCode => english[gameplay.characters.filter(x => x.typeID === championCode)[0].name];
 
-const handleMatchType = (matchType) => {
-  return {
-    wins: matchType.wins,
-    losses: matchType.losses,
-    totalGames: matchType.wins + matchType.losses,
-    winRate: matchType.wins / (matchType.wins + matchType.losses),
-  };
-};
+const handleMatchType = matchType => ({
+  wins: matchType.wins,
+  losses: matchType.losses,
+  totalGames: matchType.wins + matchType.losses,
+  winRate: matchType.wins / (matchType.wins + matchType.losses),
+});
 
-const handleGetStatsByDate = (dataIn) => {
-  return dataIn.map((record) => {
-    return {
-      championName: getChampionName(record.championCode),
-      trioRanked: handleMatchType(record.trioRanked),
-      duoRanked: handleMatchType(record.duoRanked),
-      trioNormal: handleMatchType(record.trioNormal),
-      duoNormal: handleMatchType(record.duoNormal),
-    };
-  });
-};
+const handleGetStatsByDate = dataIn => (dataIn.map(record => ({
+  championName: getChampionName(record.championCode),
+  trioRanked: handleMatchType(record.trioRanked),
+  duoRanked: handleMatchType(record.duoRanked),
+  trioNormal: handleMatchType(record.trioNormal),
+  duoNormal: handleMatchType(record.duoNormal),
+})));
 
 exports.createStats = (stats, logId) => {
   const newStats = new Stats();
@@ -72,5 +66,6 @@ exports.getStatsByLogId = (req, res) => {
   Stats.find({ log: mongoose.Types.ObjectId(req.query.id) })
     .then((response) => {
       console.log(response);
+      res.json(response);
     });
 };

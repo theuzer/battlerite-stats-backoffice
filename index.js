@@ -3,14 +3,13 @@ const path = require('path');
 const sql = require('mssql');
 const iniparser = require('iniparser');
 const ontime = require('ontime');
-const moment = require('moment');
 
-//const dataConnection = require('./database/index').dataConnection;
+const dataConnection = require('./database/index').dataConnection;
 const queries = require('./database/queries');
 const gameplay = require('./static/assets/gameplay.json');
 const logController = require('./controllers/logController');
 const statsController = require('./controllers/statsController');
-const routes = require('./routes/stats');
+const routes = require('./routes/index');
 require('./database/index');
 
 const english = iniparser.parseSync('./static/assets/English.ini');
@@ -32,17 +31,6 @@ app.listen(port, (err) => {
     console.log(`Server listening on port ${port}`);
   }
 });
-
-const dataConfig = {
-  server: "testserver-handledata.database.windows.net",
-  database: "Data",
-  user: "david",
-  password: "Admin123",
-  port: 1433,
-  options: { encrypt: true },
-};
-
-const dataConnection = new sql.ConnectionPool(dataConfig);
 
 const filterByTeamSizeAndRanked = (recordSet, teamSize, isRanked) => recordSet.filter(x => x.teamsize === teamSize && x.isranked === isRanked);
 const getChampionName = championCode => english[gameplay.characters.filter(x => x.typeID === championCode)[0].name];
@@ -72,16 +60,16 @@ const getChampionStats = (championList, i, champion, category, statsList) => {
 
 const processResponse = (recordSet, year, month, day) => {
   const champList = getChampionList(recordSet);
-  const duo_ranked = filterByTeamSizeAndRanked(recordSet, 2, true);
-  const duo_normal = recordSet.filter(x => x.teamsize === 2 && x.isranked === false);
-  const trio_ranked = recordSet.filter(x => x.teamsize === 3 && x.isranked === true);
-  const trio_normal = recordSet.filter(x => x.teamsize === 3 && x.isranked === false);
+  const duoRanked = filterByTeamSizeAndRanked(recordSet, 2, true);
+  const duoNormal = recordSet.filter(x => x.teamsize === 2 && x.isranked === false);
+  const trioRanked = recordSet.filter(x => x.teamsize === 3 && x.isranked === true);
+  const trioNormal = recordSet.filter(x => x.teamsize === 3 && x.isranked === false);
 
   champList.forEach((champ, i) => {
-    getChampionStats(champList, i, champ, 'duoRanked', duo_ranked);
-    getChampionStats(champList, i, champ, 'duoNormal', duo_normal);
-    getChampionStats(champList, i, champ, 'trioRanked', trio_ranked);
-    getChampionStats(champList, i, champ, 'trioNormal', trio_normal);
+    getChampionStats(champList, i, champ, 'duoRanked', duoRanked);
+    getChampionStats(champList, i, champ, 'duoNormal', duoNormal);
+    getChampionStats(champList, i, champ, 'trioRanked', trioRanked);
+    getChampionStats(champList, i, champ, 'trioNormal', trioNormal);
   });
 
   logController.createLog(year, month, day)
