@@ -1,11 +1,9 @@
 const Log = require('../models/log');
 
-exports.createLog = (year, month, day) => {
+exports.createLog = (type) => {
   return new Promise((resolve, reject) => {
     const newLog = new Log();
-    newLog.year = year;
-    newLog.month = month;
-    newLog.day = day;
+    newLog.type = type;
 
     newLog.save((err, log) => {
       if (err) {
@@ -13,5 +11,17 @@ exports.createLog = (year, month, day) => {
       }
       resolve(log._id);
     });
+  });
+};
+
+exports.checkIfExists = (type) => {
+  return new Promise((resolve, reject) => {
+    Log.findOne({ type })
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((err) => {
+        reject(err);
+      });
   });
 };

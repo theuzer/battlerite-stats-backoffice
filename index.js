@@ -11,13 +11,8 @@ const gameplay = require('./static/assets/gameplay.json');
 const logController = require('./controllers/logController');
 const statsController = require('./controllers/statsController');
 const routes = require('./routes/index');
+const syncData = require('./syncData/index');
 require('./database/index');
-
-dataConnection.connect()
-  .then(() => {})
-  .catch((err) => {
-    console.log(err);
-  });
 
 const english = iniparser.parseSync('./static/assets/English.ini');
 
@@ -100,6 +95,22 @@ if (process.env.HEROKU_TIMER_CREATE === 'TRUE') {
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/index.html'));
   console.log('a');
+});
+
+dataConnection.connect()
+  .then(() => {
+    console.log('data connected');
+    syncData.initializeDb();
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+ontime({
+  cycle: ['00:00:00'],
+}, (ot) => {
+  syncData.syncData();
+  ot.done();
 });
 
 /*

@@ -2,17 +2,23 @@ const sql = require('mssql');
 const mongoose = require('mongoose');
 
 const dataConfig = {
-  server: process.env.DB_DATA_SERVER,
-  database: process.env.DB_DATA_DATABASE,
-  user: process.env.DB_DATA_USERNAME,
-  password: process.env.DB_DATA_PASSWORD,
+  server: process.env.DB_DATA_SERVER || "testserver-handledata.database.windows.net",
+  database: process.env.DB_DATA_DATABASE || "Data",
+  user: process.env.DB_DATA_USERNAME || "david",
+  password: process.env.DB_DATA_PASSWORD || "Admin123",
   port: 1433,
   options: { encrypt: true },
 };
 
 const dataConnection = new sql.ConnectionPool(dataConfig);
 
-const dbURI = `mongodb://${encodeURIComponent(process.env.DB_USERNAME)}:${encodeURIComponent(process.env.DB_PASSWORD)}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`;
+const mongoUser = process.env.DB_USERNAME || "admin";
+const mongoPass = process.env.DB_PASSWORD || "admin";
+const mongoHost = process.env.DB_HOST || "ds123258.mlab.com";
+const mongoPort = process.env.DB_PORT || "23258";
+const mongoName = process.env.DB_NAME || "game";
+
+const dbURI = `mongodb://${encodeURIComponent(mongoUser)}:${encodeURIComponent(mongoPass)}@${mongoHost}:${mongoPort}/${mongoName}`;
 mongoose.connect(dbURI);
 mongoose.connection.on('error', (err) => {
   if (err) {

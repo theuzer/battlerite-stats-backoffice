@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
 const StatsSchema = new Schema({
   championCode: Number,
+  league: Number,
   duoRanked: {
     wins: Number,
     losses: Number,
