@@ -3,9 +3,8 @@ const sql = require('mssql');
 const dataConnection = require('../database/index').dataConnection;
 const logController = require('../controllers/logController');
 const statsController = require('../controllers/statsController');
-const constants = require('../models/constants');
-const queries = require('../database/queries');
-const utils = require('../controllers/utils');
+const constants = require('../common/constants');
+const utils = require('../common/utils');
 
 const filterStats = (recordSet, teamSize, isRanked, league) => recordSet.filter(x => x.teamsize === teamSize && x.isranked === isRanked && x.league === league);
 
@@ -70,39 +69,37 @@ const processResponse = (recordSet, logId) => {
   });
 };
 
-const insertStats = (logId, query) => {
+const insertStats = (query, logId) => {
   new sql.Request(dataConnection).query(query)
     .then((response) => {
       console.log(`process response ${query}`);
       processResponse(response.recordset, logId);
     })
     .catch((err) => {
-      console.log(err);
+      if (err.code === 'EREQUEST') {
+        console.log(err);
+      } else if (err.code === 'ETIMEOUT') {
+        console.log(5, query);
+        setTimeout(() => {
+          insertStats(query, logId);
+        }, 60000);
+      }
     });
 };
 
-const insertStatsWrapper = (logType, logId) => {
-  insertStats(logId, queries[`${queries.championWinrate}${logType}`]);
+const initializeLog = (logType, year, month, day) => {
+  const query = utils.getChampionWinrateQuery(logType, year, month, day);
+  console.log(query);
 
-  dataConnection.on('error', (err) => {
-    if (err.code === 'ETIMEOUT') {
-      setTimeout(() => {
-        insertStats(logId, queries[`${queries.championWinrate}${logType}`]);
-      }, 60000);
-    }
-  });
-};
-
-const initializeLog = (logType) => {
   logController.checkIfExists(logType)
     .then((log) => {
       if (log === null) {
         logController.createLog(logType)
           .then((logId) => {
-            insertStatsWrapper(logType, logId);
+            insertStats(query, logId);
           });
       } else {
-        insertStatsWrapper(logType, log._id);
+        insertStats(query, log._id);
       }
     })
     .catch((err) => {
@@ -111,7 +108,15 @@ const initializeLog = (logType) => {
 };
 
 exports.initializeDb = () => {
-  initializeLog(constants.logType.allTime);
+  const logTypes = [constants.logType.allTime, constants.logType.lastMonth, constants.logType.lastWeek, constants.logType.yesterday];
+  const currDate = new Date();
+  const year = currDate.getFullYear();
+  const month = currDate.getMonth() + 1;
+  const day = currDate.getDate();
+
+  for (let i = 0; i < logTypes.length; i++) {
+    initializeLog(logTypes[i], year, month, day);
+  }
 };
 
 exports.syncData = () => {

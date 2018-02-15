@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const constants = require('./constants');
+const constants = require('../common/constants');
 
 const Schema = mongoose.Schema;
 
@@ -11,7 +11,7 @@ const LogSchema = new Schema({
   },
   type: {
     type: String,
-    enum: [constants.logType.allTime, constants.logType.lastMonth, constants.logType.lastWeek, constants.logType.yesterday],
+    enum: [constants.logType.unfiltered, constants.logType.allTime, constants.logType.lastMonth, constants.logType.lastWeek, constants.logType.yesterday],
   },
 });
 

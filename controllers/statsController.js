@@ -2,28 +2,11 @@ const mongoose = require('mongoose');
 
 const Stats = require('../models/stats');
 const Log = require('../models/log');
-const utils = require('./utils');
-const constants = require('../models/constants');
+const utils = require('../common/utils');
 
 const noResultsFound = {
   response: 'no results found',
 };
-
-const handleMatchType = matchType => ({
-  wins: matchType.wins,
-  losses: matchType.losses,
-  totalGames: matchType.wins + matchType.losses,
-  winRate: matchType.wins / (matchType.wins + matchType.losses),
-});
-
-const handleGetStatsByDate = dataIn => (dataIn.map(record => ({
-  championName: utils.getChampionName(record.championCode),
-  trioRanked: handleMatchType(record.trioRanked),
-  duoRanked: handleMatchType(record.duoRanked),
-  trioNormal: handleMatchType(record.trioNormal),
-  duoNormal: handleMatchType(record.duoNormal),
-})));
-
 
 const handleUnfilteredResponse = (dataIn) => {
   const champions = utils.getChampionList(dataIn);
@@ -44,11 +27,10 @@ const handleUnfilteredResponse = (dataIn) => {
   return champions;
 };
 
-const handleStats = (dataIn, isRanked, league, mode) => {
+const handleStats = (dataIn, type, isRanked, league, mode) => {
   if (isRanked === null && league === null && mode === null) {
     return handleUnfilteredResponse(dataIn);
   }
-
 };
 
 exports.getStats = (req, res) => {
@@ -62,16 +44,14 @@ exports.getStats = (req, res) => {
       if (log !== null) {
         Stats.find({ log: mongoose.Types.ObjectId(log._id) }).lean().exec()
           .then((stats) => {
-            const dataOut = handleGetStatsByDate(stats);
-            
-            res.json(handleStats(stats, isRanked, league, mode));
+            res.json(handleStats(stats, type, isRanked, league, mode));
           });
       } else {
         res.json(noResultsFound);
       }
     })
     .catch((err) => {
-      console.log(err);
+      res.json(err);
     });
 };
 

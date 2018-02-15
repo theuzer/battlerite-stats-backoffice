@@ -1,6 +1,6 @@
 const sql = require('mssql');
 
-const queries = require('../database/queries');
+const queries = require('../common/queries');
 const dataConnection = require('../database/index').dataConnection;
 
 exports.getCharacterHistory = (req, res) => {
