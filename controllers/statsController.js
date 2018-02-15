@@ -27,7 +27,7 @@ const handleUnfilteredResponse = (dataIn) => {
   return champions;
 };
 
-const handleStats = (dataIn, type, isRanked, league, mode) => {
+const handleStats = (dataIn, isRanked, league, mode) => {
   if (isRanked === null && league === null && mode === null) {
     return handleUnfilteredResponse(dataIn);
   }
@@ -44,7 +44,7 @@ exports.getStats = (req, res) => {
       if (log !== null) {
         Stats.find({ log: mongoose.Types.ObjectId(log._id) }).lean().exec()
           .then((stats) => {
-            res.json(handleStats(stats, type, isRanked, league, mode));
+            res.json(handleStats(stats, isRanked, league, mode));
           });
       } else {
         res.json(noResultsFound);
