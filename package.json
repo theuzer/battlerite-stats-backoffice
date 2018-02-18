@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/theuzer/game-app#readme",
   "dependencies": {
+    "axios": "^0.17.1",
     "express": "^4.16.2",
     "foreman": "^2.0.0",
     "iniparser": "^1.0.5",

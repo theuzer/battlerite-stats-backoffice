@@ -14,4 +14,5 @@ module.exports = {
   getChampionWinrateLastMonth,
   getChampionWinrateLastWeek,
   getChampionWinrateYesterday,
+  getDistinctPlayers: "select distinct(playerCode) from character",
 };

@@ -8,7 +8,7 @@ const syncData = require('./syncData/index');
 const dataConnection = require('./database/index').dataConnection;
 require('./database/index');
 
-const port = process.env.PORT || 5000;
+const port = 3000; // || process.env.PORT
 
 const app = express();
 

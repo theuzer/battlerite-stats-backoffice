@@ -14,9 +14,9 @@ const dataConnection = new sql.ConnectionPool(dataConfig);
 
 const mongoUser = process.env.DB_USERNAME || "admin";
 const mongoPass = process.env.DB_PASSWORD || "admin";
-const mongoHost = process.env.DB_HOST || "ds123258.mlab.com";
-const mongoPort = process.env.DB_PORT || "23258";
-const mongoName = process.env.DB_NAME || "game";
+const mongoHost = process.env.DB_HOST || "ds237748.mlab.com";
+const mongoPort = process.env.DB_PORT || "37748";
+const mongoName = process.env.DB_NAME || "battlerite-stats-backoffice";
 
 const dbURI = `mongodb://${encodeURIComponent(mongoUser)}:${encodeURIComponent(mongoPass)}@${mongoHost}:${mongoPort}/${mongoName}`;
 mongoose.connect(dbURI);
