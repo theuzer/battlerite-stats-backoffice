@@ -1,5 +1,6 @@
 const sql = require('mssql');
 const axios = require('axios');
+const ontime = require('ontime');
 
 const dataConnection = require('../database/index').dataConnection;
 const queries = require('../common/queries');
@@ -7,14 +8,19 @@ const constants = require('../common/constants');
 const playerController = require('../controllers/playerController');
 
 const getHeader = key => ({ headers: { Authorization: key, Accept: constants.api.accept } });
-let playerCodesQueue;
+const playerCodesQueue = [];
 
 const processPlayerCodes = (playerCodes) => {
   playerController.getAllPlayers()
     .then((existingPlayers) => {
+      console.time('a');
       playerCodes = playerCodes.map(player => player.playerCode);
       existingPlayers = existingPlayers.map(existingPlayer => existingPlayer.playerCode);
-      playerCodesQueue = playerCodes.filter(x => existingPlayers.indexOf(x) === -1);
+      for (let i = 0; i < playerCodes.length; i++) {
+        if (existingPlayers.indexOf(playerCodes[i]) === -1) {
+          playerCodesQueue.push(playerCodes[i]);
+        }
+      }
     })
     .catch((err) => {
       console.log(err);
@@ -61,8 +67,10 @@ exports.initializeLog = () => {
     });
 };
 
-setInterval(() => {
-  console.log('do work');
+ontime({
+  cycle: ['0'],
+}, (ot) => {
+  console.log('sync players');
   if (playerCodesQueue.length !== 0) {
     console.log('length', playerCodesQueue.length);
     const keys = [constants.api.keys.key1, constants.api.keys.key2, constants.api.keys.key3, constants.api.keys.key4, constants.api.keys.key5];
@@ -70,4 +78,5 @@ setInterval(() => {
       doWork(keys[i], 0);
     }
   }
-}, 60000);
+  ot.done();
+});

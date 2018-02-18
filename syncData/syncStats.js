@@ -69,39 +69,58 @@ const processResponse = (recordSet, logId) => {
 };
 
 const insertStats = (query, logId) => {
-  new sql.Request(dataConnection).query(query)
-    .then((response) => {
-      console.log(`process response ${query}`);
-      processResponse(response.recordset, logId);
-    })
-    .catch((err) => {
-      if (err.code === 'EREQUEST') {
-        console.log(err);
-      } else if (err.code === 'ETIMEOUT') {
-        console.log(5, query);
-        setTimeout(() => {
-          insertStats(query, logId);
-        }, 60000);
-      }
-    });
+  return new Promise((resolve, reject) => {
+    console.log(query);
+    new sql.Request(dataConnection).query(query)
+      .then((response) => {
+        console.log(`process response ${query}`);
+        processResponse(response.recordset, logId);
+        resolve();
+      })
+      .catch((err) => {
+        if (err.code === 'EREQUEST') {
+          console.log(err);
+          reject();
+        } else if (err.code === 'ETIMEOUT') {
+          console.log(5, query);
+          setTimeout(() => {
+            insertStats(query, logId);
+          }, 60000);
+        }
+      });
+  });
 };
 
 exports.initializeLog = (logType, year, month, day) => {
-  const query = utils.getChampionWinrateQuery(logType, year, month, day);
-  console.log(query);
+  return new Promise((resolve, reject) => {
+    const query = utils.getChampionWinrateQuery(logType, year, month, day);
 
-  logController.checkIfExists(logType)
-    .then((log) => {
-      if (log === null) {
-        logController.createLog(logType)
-          .then((logId) => {
-            insertStats(query, logId);
-          });
-      } else {
-        insertStats(query, log._id);
-      }
-    })
-    .catch((err) => {
-      console.log(1, logType, err);
-    });
+    logController.checkIfExists(logType)
+      .then((log) => {
+        if (log === null) {
+          logController.createLog(logType)
+            .then((logId) => {
+              insertStats(query, logId)
+                .then(() => {
+                  resolve();
+                })
+                .catch(() => {
+                  reject();
+                });
+            });
+        } else {
+          insertStats(query, log._id)
+            .then(() => {
+              resolve();
+            })
+            .catch(() => {
+              reject();
+            });
+        }
+      })
+      .catch((err) => {
+        reject();
+        console.log(1, logType, err);
+      });
+  });
 };
