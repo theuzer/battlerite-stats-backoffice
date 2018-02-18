@@ -3,7 +3,7 @@ const syncStats = require('./syncStats');
 const syncPlayers = require('./syncPlayers');
 
 const delayLog = (logType, year, month, day, delayInSeconds) =>
-  setInterval(() => {
+  setTimeout(() => {
     syncStats.initializeLog(logType, year, month, day);
   }, delayInSeconds * 1000);
 
