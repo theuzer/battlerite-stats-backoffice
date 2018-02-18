@@ -14,9 +14,9 @@ exports.initializeDb = () => {
   const day = currDate.getDate();
 
   syncStats.initializeLog(constants.logType.yesterday, year, month, day);
-  delayLog(constants.logType.lastWeek, year, month, day, 30);
-  delayLog(constants.logType.lastMonth, year, month, day, 60);
-  delayLog(constants.logType.allTime, year, month, day, 90);
+  delayLog(constants.logType.lastWeek, year, month, day, 60);
+  delayLog(constants.logType.lastMonth, year, month, day, 120);
+  delayLog(constants.logType.allTime, year, month, day, 180);
 
   syncPlayers.initializeLog();
 };
