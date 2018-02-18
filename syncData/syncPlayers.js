@@ -24,7 +24,6 @@ const processPlayerCodes = (playerCodes) => {
 const doWork = (key, i) => {
   if (i < 10) {
     const playerCode = playerCodesQueue.shift();
-    console.log(playerCode);
     playerController.checkIfPlayerExists(playerCode)
       .then((exists) => {
         if (!exists) {
