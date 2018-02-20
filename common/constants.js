@@ -5,7 +5,6 @@ module.exports = {
     lastWeek: 'LastWeek',
     yesterday: 'Yesterday',
   },
-  undefined: 'undefined',
   api: {
     accept: 'application/vnd.api+json',
     playerUrl: playerId => `https://api.dc01.gamelockerapp.com/shards/global/players/${playerId}`,

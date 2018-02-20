@@ -3,7 +3,6 @@ const path = require('path');
 const ontime = require('ontime');
 const https = require('https');
 
-const routes = require('./routes/index');
 const syncData = require('./syncData/index');
 const dataConnection = require('./database/index').dataConnection;
 require('./database/index');
@@ -11,14 +10,6 @@ require('./database/index');
 const port = process.env.PORT || 3000;
 
 const app = express();
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-
-app.use('/api', routes);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/index.html'));
