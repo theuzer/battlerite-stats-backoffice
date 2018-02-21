@@ -25,3 +25,11 @@ exports.checkIfExists = (type) => {
       });
   });
 };
+
+exports.updateLog = (logId) => {
+  Log.update({ _id: logId }, { date_created: Date.now() }, (err) => {
+    if (err) {
+      throw err;
+    }
+  });
+};

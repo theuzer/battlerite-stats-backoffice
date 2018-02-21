@@ -109,6 +109,7 @@ exports.initializeLog = (logType, year, month, day) => {
                 });
             });
         } else {
+          logController.updateLog(log._id);
           insertStats(query, log._id)
             .then(() => {
               resolve();
