@@ -16,6 +16,9 @@ const processPlayerCodes = (playerCodes) => {
       .then((exists) => {
         if (exists) {
           new sql.Request(dataConnection).query(queries.updatePlayerProcessed(playerCode))
+            .then(() => {
+              console.log('player exists', playerCode);
+            })
             .catch((err) => {
               console.log(err);
             });
