@@ -54,7 +54,8 @@ const doWork = (key, i) => {
   }
 };
 
-exports.initializeLog = () => {
+const initializeLog = () => {
+  console.log('Started retrieving players');
   console.time('getDistinctPlayers');
   new sql.Request(dataConnection).query(queries.getDistinctPlayers)
     .then((response) => {
@@ -63,6 +64,8 @@ exports.initializeLog = () => {
     })
     .catch((err) => {
       console.log(err.code);
+      console.timeEnd('getDistinctPlayers');
+      initializeLog();
     });
 };
 
@@ -79,3 +82,7 @@ ontime({
   }
   ot.done();
 });
+
+module.exports = {
+  initializeLog,
+};
