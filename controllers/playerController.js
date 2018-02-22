@@ -2,6 +2,7 @@ const Player = require('../models/player');
 
 exports.checkIfPlayerExists = (playerCode) => {
   return new Promise((resolve, reject) => {
+    console.log(playerCode);
     Player.findOne({ playerCode }).exec()
       .then((player) => {
         if (player !== null) {

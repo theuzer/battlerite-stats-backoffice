@@ -11,6 +11,7 @@ const getHeader = key => ({ headers: { Authorization: key, Accept: constants.api
 const playerCodesQueue = [];
 
 const processPlayerCodes = (playerCodes) => {
+  console.log(playerCodes);
   playerCodes.forEach((playerCode) => {
     playerController.checkIfPlayerExists(playerCode)
       .then((exists) => {
