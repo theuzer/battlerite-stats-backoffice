@@ -19,7 +19,7 @@ const processPlayerCodes = (playerCodes) => {
             .then(() => {
             })
             .catch((err) => {
-              console.log(err);
+              console.log(err.code);
             });
         } else {
           playerCodesQueue.push(playerCode.playerCode);
