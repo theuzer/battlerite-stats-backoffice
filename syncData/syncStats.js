@@ -146,8 +146,6 @@ const syncData = () => {
     });
 };
 
-syncData();
-
 ontime({
   cycle: ['00:00:00'],
 }, (ot) => {
@@ -155,3 +153,6 @@ ontime({
   ot.done();
 });
 
+module.exports = {
+  syncData,
+};

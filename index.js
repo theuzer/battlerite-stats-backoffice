@@ -3,6 +3,7 @@ const path = require('path');
 const https = require('https');
 
 require('./database/index');
+const syncStats = require('./syncData/syncStats');
 
 const port = process.env.PORT || 3000;
 
@@ -28,3 +29,9 @@ if (process.env.HEROKU_TIMER_CREATE === 'TRUE') {
     console.log('Pinged application');
   }, parseInt(process.env.HEROKU_APP_TIMER, 10));
 }
+
+// TEST
+
+setTimeout(() => {
+  syncStats.syncData();
+}, 5000);
