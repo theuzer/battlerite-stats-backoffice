@@ -59,7 +59,7 @@ const doWork = (key, i) => {
 const initializeLog = () => {
   console.log('Started retrieving players');
   console.time('getDistinctPlayers');
-  new sql.Request(dataConnection).query(queries.getDistinctPlayers)
+  new sql.Request(dataConnection).query(queries.getDistinctPlayers(parseInt(process.env.NUMBER_OF_PLAYERS, 10)))
     .then((response) => {
       console.timeEnd('getDistinctPlayers');
       processPlayerCodes(response.recordset);

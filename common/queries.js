@@ -9,6 +9,6 @@ module.exports = {
   getChampionWinrateLastMonth,
   getChampionWinrateLastWeek,
   getChampionWinrateYesterday,
-  getDistinctPlayers: "select distinct top 100 playerCode from character where isPlayerProcessed = 0",
+  getDistinctPlayers: number => `select distinct top ${number} playerCode from character where isPlayerProcessed = 0`,
   updatePlayerProcessed: playerCode => `update character set isPlayerProcessed = 1 where playerCode = ${playerCode}`,
 };
