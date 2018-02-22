@@ -8,6 +8,9 @@ exports.initializeDb = () => {
   const month = currDate.getMonth() + 1;
   const day = currDate.getDate();
 
+  syncPlayers.initializeLog();
+
+  /*
   syncStats.initializeLog(constants.logType.yesterday, year, month, day)
     .then(() => {
       syncStats.initializeLog(constants.logType.lastWeek, year, month, day)
@@ -21,6 +24,8 @@ exports.initializeDb = () => {
             });
         });
     });
+
+    */
 };
 
 exports.syncData = () => {
