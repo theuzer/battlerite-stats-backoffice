@@ -75,6 +75,7 @@ const insertStats = (query, logId) => {
       .then((response) => {
         console.log(`process response ${query}`);
         processResponse(response.recordset, logId);
+        logController.updateLog(logId);
         resolve();
       })
       .catch((err) => {
@@ -109,7 +110,6 @@ exports.initializeLog = (logType, year, month, day) => {
                 });
             });
         } else {
-          logController.updateLog(log._id);
           insertStats(query, log._id)
             .then(() => {
               resolve();
