@@ -1,9 +1,11 @@
 const sql = require('mssql');
+const ontime = require('ontime');
 
 const dataConnection = require('../database/index').dataConnection;
 const logController = require('../controllers/logController');
 const statsController = require('../controllers/statsController');
 const utils = require('../common/utils');
+const constants = require('../common/constants');
 
 const filterStats = (recordSet, teamSize, isRanked, league) => recordSet.filter(x => x.teamsize === teamSize && x.isranked === isRanked && x.league === league);
 
@@ -92,7 +94,7 @@ const insertStats = (query, logId) => {
   });
 };
 
-exports.initializeLog = (logType, year, month, day) => {
+const initializeLog = (logType, year, month, day) => {
   return new Promise((resolve, reject) => {
     const query = utils.getChampionWinrateQuery(logType, year, month, day);
 
@@ -125,3 +127,31 @@ exports.initializeLog = (logType, year, month, day) => {
       });
   });
 };
+
+const syncData = () => {
+  const currDate = new Date();
+  const year = currDate.getFullYear();
+  const month = currDate.getMonth() + 1;
+  const day = currDate.getDate();
+
+  initializeLog(constants.logType.yesterday, year, month, day)
+    .then(() => {
+      initializeLog(constants.logType.lastWeek, year, month, day)
+        .then(() => {
+          initializeLog(constants.logType.lastMonth, year, month, day)
+            .then(() => {
+              initializeLog(constants.logType.allTime, year, month, day);
+            });
+        });
+    });
+};
+
+syncData();
+
+ontime({
+  cycle: ['00:00:00'],
+}, (ot) => {
+  syncData();
+  ot.done();
+});
+

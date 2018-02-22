@@ -74,6 +74,7 @@ const initializeLog = () => {
 ontime({
   cycle: ['0'],
 }, (ot) => {
+  /*
   initializeLog();
   console.log('sync players');
   if (playerCodesQueue.length !== 0) {
@@ -83,9 +84,6 @@ ontime({
       doWork(keys[i], 0);
     }
   }
+  */
   ot.done();
 });
-
-module.exports = {
-  initializeLog,
-};

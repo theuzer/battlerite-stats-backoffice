@@ -12,6 +12,13 @@ const dataConfig = {
 };
 
 const dataConnection = new sql.ConnectionPool(dataConfig);
+dataConnection.connect()
+  .then(() => {
+    console.log('data connected');
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 const mongoUser = process.env.DB_USERNAME;
 const mongoPass = process.env.DB_PASSWORD;
