@@ -77,6 +77,7 @@ const initializeLog = () => {
 ontime({
   cycle: ['0'],
 }, (ot) => {
+  initializeLog();
   console.log('sync players');
   if (playerCodesQueue.length !== 0) {
     console.log('length', playerCodesQueue.length);

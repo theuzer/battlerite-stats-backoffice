@@ -8,7 +8,7 @@ exports.initializeDb = () => {
   const month = currDate.getMonth() + 1;
   const day = currDate.getDate();
 
-  syncPlayers.initializeLog();
+  // syncPlayers.initializeLog();
 
   /*
   syncStats.initializeLog(constants.logType.yesterday, year, month, day)
