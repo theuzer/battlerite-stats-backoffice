@@ -11,20 +11,19 @@ const getHeader = key => ({ headers: { Authorization: key, Accept: constants.api
 const playerCodesQueue = [];
 
 const processPlayerCodes = (playerCodes) => {
-  playerController.getAllPlayers()
-    .then((existingPlayers) => {
-      console.time('a');
-      playerCodes = playerCodes.map(player => player.playerCode);
-      existingPlayers = existingPlayers.map(existingPlayer => existingPlayer.playerCode);
-      for (let i = 0; i < playerCodes.length; i++) {
-        if (existingPlayers.indexOf(playerCodes[i]) === -1) {
-          playerCodesQueue.push(playerCodes[i]);
+  playerCodes.forEach((playerCode) => {
+    playerController.checkIfPlayerExists(playerCode)
+      .then((exists) => {
+        if (exists) {
+          new sql.Request(dataConnection).query(queries.updatePlayerProcessed(playerCode))
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          playerCodesQueue.push(playerCode);
         }
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      });
+  });
 };
 
 const doWork = (key, i) => {
