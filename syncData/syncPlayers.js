@@ -15,14 +15,16 @@ const processPlayerCodes = (playerCodes) => {
     playerController.checkIfPlayerExists(playerCode)
       .then((exists) => {
         if (exists) {
+          console.log('existing player', playerCode);
           new sql.Request(dataConnection).query(queries.updatePlayerProcessed(playerCode))
             .then(() => {
-              console.log('player exists', playerCode);
+              console.log('existing player updated', playerCode);
             })
             .catch((err) => {
               console.log(err);
             });
         } else {
+          console.log('new player', playerCode);
           playerCodesQueue.push(playerCode);
         }
       });
