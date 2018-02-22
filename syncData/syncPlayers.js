@@ -67,7 +67,6 @@ const initializeLog = () => {
     .catch((err) => {
       console.log(err.code);
       console.timeEnd('getDistinctPlayers');
-      initializeLog();
     });
 };
 
