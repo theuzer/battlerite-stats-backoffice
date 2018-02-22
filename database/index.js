@@ -8,7 +8,7 @@ const dataConfig = {
   password: process.env.DB_DATA_PASSWORD,
   port: 1433,
   options: { encrypt: true },
-  requestTimeout: 45000,
+  requestTimeout: 120000,
 };
 
 const dataConnection = new sql.ConnectionPool(dataConfig);
