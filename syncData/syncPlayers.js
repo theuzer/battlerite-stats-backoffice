@@ -61,6 +61,7 @@ const initializeLog = () => {
   console.time('getDistinctPlayers');
   new sql.Request(dataConnection).query(queries.getDistinctPlayers(parseInt(process.env.NUMBER_OF_PLAYERS, 10)))
     .then((response) => {
+      console.log(response.recordset.length);
       console.timeEnd('getDistinctPlayers');
       processPlayerCodes(response.recordset);
     })
