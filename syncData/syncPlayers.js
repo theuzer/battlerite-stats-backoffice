@@ -15,17 +15,17 @@ const processPlayerCodes = (playerCodes) => {
     playerController.checkIfPlayerExists(playerCode.playerCode)
       .then((exists) => {
         if (exists) {
-          console.log('existing player', playerCode);
-          new sql.Request(dataConnection).query(queries.updatePlayerProcessed(playerCode))
+          console.log('existing player', playerCode.playerCode);
+          new sql.Request(dataConnection).query(queries.updatePlayerProcessed(playerCode.playerCode))
             .then(() => {
-              console.log('existing player updated', playerCode);
+              console.log('existing player updated', playerCode.playerCode);
             })
             .catch((err) => {
               console.log(err);
             });
         } else {
-          console.log('new player', playerCode);
-          playerCodesQueue.push(playerCode);
+          console.log('new player', playerCode.playerCode);
+          playerCodesQueue.push(playerCode.playerCode);
         }
       });
   });
