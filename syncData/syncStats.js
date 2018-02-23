@@ -206,6 +206,8 @@ const processLeague = (recordSet, logId, champList, league) => {
     champ.league = league;
   });
 
+  console.log(champList);
+
   champList.forEach((champ) => {
     statsController.createOrUpdateStats(champ, logId);
   });
