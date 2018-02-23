@@ -21,6 +21,10 @@ exports.createOrUpdateStats = (stats, logId) => {
         log: logId,
         championCode: stats.championCode,
         league: stats.league,
+        duoRanked: stats.duoRanked,
+        duoNormal: stats.duoNormal,
+        trioRanked: stats.trioRanked,
+        trioNormal: stats.trioNormal,
       },
       { upsert: true },
       (err, doc) => {
