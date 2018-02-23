@@ -2,13 +2,13 @@ const sql = require('mssql');
 const mongoose = require('mongoose');
 
 const dataConfig = {
-  server: process.env.DB_DATA_SERVER || "testserver-handledata.database.windows.net",
-  database: process.env.DB_DATA_DATABASE || "Data",
-  user: process.env.DB_DATA_USERNAME || "david",
-  password: process.env.DB_DATA_PASSWORD || "Admin123",
+  server: process.env.DB_DATA_SERVER,
+  database: process.env.DB_DATA_DATABASE,
+  user: process.env.DB_DATA_USERNAME,
+  password: process.env.DB_DATA_PASSWORD,
   port: 1433,
   options: { encrypt: true },
-  requestTimeout: parseInt(process.env.DB_DATA_QUERY_TIMEOUT || "45000", 10),
+  requestTimeout: parseInt(process.env.DB_DATA_QUERY_TIMEOUT, 10),
 };
 
 const dataConnection = new sql.ConnectionPool(dataConfig);
@@ -20,11 +20,11 @@ dataConnection.connect()
     console.log(err);
   });
 
-const mongoUser = process.env.DB_USERNAME || "admin";
-const mongoPass = process.env.DB_PASSWORD || "admin";
-const mongoHost = process.env.DB_HOST || "ds237748.mlab.com";
-const mongoPort = process.env.DB_PORT || "37748";
-const mongoName = process.env.DB_NAME || "battlerite-stats-backoffice";
+const mongoUser = process.env.DB_USERNAME
+const mongoPass = process.env.DB_PASSWORD;
+const mongoHost = process.env.DB_HOST;
+const mongoPort = process.env.DB_PORT;
+const mongoName = process.env.DB_NAME;
 
 const dbURI = `mongodb://${encodeURIComponent(mongoUser)}:${encodeURIComponent(mongoPass)}@${mongoHost}:${mongoPort}/${mongoName}`;
 mongoose.connect(dbURI);
