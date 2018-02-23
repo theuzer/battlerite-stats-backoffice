@@ -88,7 +88,7 @@ const insertStats = (query, logId) => {
     new sql.Request(dataConnection).query(query)
       .then((response) => {
         console.log(`process response ${query}`);
-        processResponse2(response.recordset, logId);
+        processResponse(response.recordset, logId);
         logController.updateLog(logId);
         resolve();
       })
@@ -165,17 +165,32 @@ ontime({
   ot.done();
 });
 
-/*
-const processResponse = (recordSet, logId) => {
-  const champList = getChampionList(recordSet);
-  const leagueList = getLeagueList(recordSet);
+const filterStats = (recordSet, teamSize, isRanked, league) => recordSet.filter(x => x.TeamSize === teamSize && x.IsRanked === isRanked && x.League === league);
 
-  leagueList.forEach((league) => {
-    processLeague(recordSet, logId, JSON.parse(JSON.stringify(champList)), league);
-  });
+const getChampionStats = (championList, i, champion, category, statsList) => {
+  const champ = statsList.filter(x => x.ChampionCode === champion.championCode);
+  const wins = champ.filter(x => x.Win === true);
+  const losses = champ.filter(x => x.Win === false);
+  championList[i][category] = {
+    wins: map(wins, 'GamesCount'),
+    losses: map(losses, 'GamesCount'),
+    gamesCount: map(wins, 'GamesCount') + map(losses, 'GamesCount'),
+    roundsCount: map(wins, 'RoundsCount') + map(losses, 'RoundsCount'),
+    abilityUses: map(wins, 'AbilityUses') + map(losses, 'AbilityUses'),
+    damageDone: map(wins, 'DamageDone') + map(losses, 'DamageDone'),
+    damageReceived: map(wins, 'DamageReceived') + map(losses, 'DamageReceived'),
+    deaths: map(wins, 'Deaths') + map(losses, 'Deaths'),
+    disablesDone: map(wins, 'DisablesDone') + map(losses, 'DisablesDone'),
+    disablesReceived: map(wins, 'DisablesReceived') + map(losses, 'DisablesReceived'),
+    energyGained: map(wins, 'EnergyGained') + map(losses, 'EnergyGained'),
+    energyUsed: map(wins, 'EnergyUsed') + map(losses, 'EnergyUsed'),
+    healingDone: map(wins, 'HealingDone') + map(losses, 'HealingDone'),
+    healingReceived: map(wins, 'HealingReceived') + map(losses, 'HealingReceived'),
+    kills: map(wins, 'Kills') + map(losses, 'Kills'),
+    score: map(wins, 'Score') + map(losses, 'Score'),
+    timeAlive: map(wins, 'TimeAlive') + map(losses, 'TimeAlive'),
+  };
 };
-
-const filterStats = (recordSet, teamSize, isRanked, league) => recordSet.filter(x => x.teamsize === teamSize && x.isranked === isRanked && x.league === league);
 
 const processLeague = (recordSet, logId, champList, league) => {
   const duoRanked = filterStats(recordSet, 2, true, league);
@@ -196,14 +211,15 @@ const processLeague = (recordSet, logId, champList, league) => {
   });
 };
 
-const getChampionStats = (championList, i, champion, category, statsList) => {
-  const champ = statsList.filter(x => x.championcode === champion.championCode);
-  const victories = champ.filter(x => x.win === true);
-  const losses = champ.filter(x => x.win === false);
-  championList[i][category] = {
-    wins: victories.length === 0 ? 0 : victories[0].count,
-    losses: losses.length === 0 ? 0 : losses[0].count,
-  };
+const processResponse = (recordSet, logId) => {
+  const champList = utils.getChampionList(recordSet);
+  const leagueList = utils.getLeagueList(recordSet);
+
+  leagueList.forEach((league) => {
+    processLeague(recordSet, logId, JSON.parse(JSON.stringify(champList)), league);
+  });
 };
 
-*/
+exports.module = {
+  syncData,
+};
