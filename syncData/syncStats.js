@@ -60,7 +60,7 @@ const processChampion = (recordSet, logId, league, champion) => {
       statsDetailController.createOrUpdateStatsDetail(trioNormalStats, doc._id, constants.statsType.trioNormal);
     })
     .catch((err) => {
-      console.log(err);
+      console.log(6, err);
     });
 };
 
