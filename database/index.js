@@ -20,7 +20,7 @@ dataConnection.connect()
     console.log(err);
   });
 
-const mongoUser = process.env.DB_USERNAME
+const mongoUser = process.env.DB_USERNAME;
 const mongoPass = process.env.DB_PASSWORD;
 const mongoHost = process.env.DB_HOST;
 const mongoPort = process.env.DB_PORT;

@@ -28,5 +28,3 @@ if (process.env.HEROKU_TIMER_CREATE === 'TRUE') {
     console.log('Pinged application');
   }, parseInt(process.env.HEROKU_APP_TIMER, 10));
 }
-
-// TEST
