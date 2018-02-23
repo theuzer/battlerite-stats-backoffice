@@ -13,7 +13,6 @@ const filterStats2 = (recordSet, teamSize, isRanked) => recordSet.filter(x => x.
 const map = (obj, stat) => (obj !== 'undefined' && obj.length !== 0 ? obj[0][stat] : 0);
 
 const getChampionStats2 = (records) => {
-  console.log(records);
   const wins = records.filter(x => x.Win === true);
   const losses = records.filter(x => x.Win === false);
   return {
@@ -52,8 +51,6 @@ const processChampion = (recordSet, logId, league, champion) => {
     championCode: champion.championCode,
     league: league,
   };
-
-  console.log(duoRankedStats);
 
   statsController.createOrUpdateStats(stats, logId)
     .then((doc) => {
