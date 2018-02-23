@@ -29,8 +29,8 @@ exports.createStatsDetail = (statsDetail, statsId, type) => {
   });
 };
 
-exports.createOrUpdateStats = (statsDetail, statsId, type) => {
-  StatsDetail.update(
+exports.createOrUpdateStatsDetail = (statsDetail, statsId, type) => {
+  StatsDetail.findOneAndUpdate(
     { stats: statsId, type },
     {
       stats: statsId,

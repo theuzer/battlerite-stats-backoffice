@@ -9,7 +9,7 @@ const StatsDetailSchema = new Schema({
     type: String,
     enum: [constants.statsType.duoNormal, constants.statsType.duoRanked, constants.statsType.trioNormal, constants.statsType.trioRanked],
   },
-  statsId: {
+  stats: {
     type: Schema.Types.ObjectId,
     ref: 'Stats',
   },

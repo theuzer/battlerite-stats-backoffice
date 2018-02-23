@@ -15,7 +15,7 @@ exports.createStats = (stats, logId) => {
 
 exports.createOrUpdateStats = (stats, logId) => {
   return new Promise((resolve, reject) => {
-    Stats.update(
+    Stats.findOneAndUpdate(
       { log: logId, championCode: stats.championCode, league: stats.league },
       {
         log: logId,
@@ -25,7 +25,6 @@ exports.createOrUpdateStats = (stats, logId) => {
       { upsert: true },
       (err, doc) => {
         if (err) {
-          console.log(err);
           reject(err);
         }
         resolve(doc);

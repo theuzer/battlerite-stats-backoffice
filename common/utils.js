@@ -8,7 +8,7 @@ const english = iniparser.parseSync('./static/assets/English.ini');
 
 const getChampionName = championCode => english[gameplay.characters.filter(x => x.typeID === championCode)[0].name];
 
-exports.getChampionStatsQuery = (logType, year, month, day) => {
+const getChampionStatsQuery = (logType, year, month, day) => {
   switch (logType) {
     case constants.logType.allTime:
       return queries.getChampionStatsAllTime;
@@ -23,7 +23,7 @@ exports.getChampionStatsQuery = (logType, year, month, day) => {
   }
 };
 
-exports.getChampionList = (recordSet) => {
+const getChampionList = (recordSet) => {
   const champList = [];
   recordSet.forEach((record) => {
     if (!champList.some(x => x.championCode === record.ChampionCode)) {
@@ -36,7 +36,7 @@ exports.getChampionList = (recordSet) => {
   return champList;
 };
 
-exports.getLeagueList = (recordSet) => {
+const getLeagueList = (recordSet) => {
   const leagueList = [];
   recordSet.forEach((record) => {
     if (!leagueList.some(x => x === record.League)) {
@@ -48,4 +48,7 @@ exports.getLeagueList = (recordSet) => {
 
 module.exports = {
   getChampionName,
+  getChampionStatsQuery,
+  getChampionList,
+  getLeagueList,
 };
