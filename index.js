@@ -3,6 +3,8 @@ const path = require('path');
 const https = require('https');
 
 require('./database/index');
+require('./syncData/syncPlayers');
+require('./syncData/syncStats');
 
 const port = process.env.PORT || 3000;
 
