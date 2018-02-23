@@ -165,10 +165,6 @@ ontime({
   ot.done();
 });
 
-module.exports = {
-  syncData,
-};
-
 /*
 const processResponse = (recordSet, logId) => {
   const champList = getChampionList(recordSet);
