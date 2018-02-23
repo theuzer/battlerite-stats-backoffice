@@ -220,6 +220,6 @@ const processResponse = (recordSet, logId) => {
   });
 };
 
-exports.module = {
+module.exports = {
   syncData,
 };
