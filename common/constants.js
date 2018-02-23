@@ -5,6 +5,12 @@ module.exports = {
     lastWeek: 'LastWeek',
     yesterday: 'Yesterday',
   },
+  statsType: {
+    duoRanked: 'DuoRanked',
+    duoNormal: 'DuoNormal',
+    trioRanked: 'TrioRanked',
+    trioNormal: 'TrioNormal',
+  },
   api: {
     accept: 'application/vnd.api+json',
     playerUrl: playerId => `https://api.dc01.gamelockerapp.com/shards/global/players/${playerId}`,

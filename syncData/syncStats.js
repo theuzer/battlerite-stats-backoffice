@@ -4,69 +4,62 @@ const ontime = require('ontime');
 const dataConnection = require('../database/index').dataConnection;
 const logController = require('../controllers/logController');
 const statsController = require('../controllers/statsController');
+const statsDetailController = require('../controllers/statsDetailController');
 const utils = require('../common/utils');
 const constants = require('../common/constants');
 
-const filterStats = (recordSet, teamSize, isRanked, league) => recordSet.filter(x => x.teamsize === teamSize && x.isranked === isRanked && x.league === league);
+const filterStats2 = (recordSet, teamSize, isRanked) => recordSet.filter(x => x.TeamSize === teamSize && x.IsRanked === isRanked);
 
-const getChampionStats = (championList, i, champion, category, statsList) => {
-  const champ = statsList.filter(x => x.championcode === champion.championCode);
-  const victories = champ.filter(x => x.win === true);
-  const losses = champ.filter(x => x.win === false);
-  championList[i][category] = {
-    wins: victories.length === 0 ? 0 : victories[0].count,
-    losses: losses.length === 0 ? 0 : losses[0].count,
+const getChampionStats2 = (records) => {
+  const wins = records.filter(x => x.win === true)[0];
+  const losses = records.filter(x => x.win === false)[0];
+  return {
+    wins: wins.GamesCount,
+    losses: losses.GamesCount,
+    gamesCount: wins.GamesCount + losses.GamesCount,
+    roundsCount: wins.RoundsCount + losses.RoundsCount,
+    abilityUses: wins.AbilityUses + losses.AbilityUses,
+  }; // divide this by 1)rounds count for average per round 2)games count for average per game
+};
+
+const processChampion = (recordSet, logId, league, champion) => {
+  const duoRanked = filterStats2(recordSet, 2, true);
+  const duoNormal = filterStats2(recordSet, 2, false);
+  const trioRanked = filterStats2(recordSet, 3, true);
+  const trioNormal = filterStats2(recordSet, 3, false);
+
+  const duoRankedStats = getChampionStats2(duoRanked);
+  const duoNormalStats = getChampionStats2(duoNormal);
+  const trioRankedStats = getChampionStats2(trioRanked);
+  const trioNormalStats = getChampionStats2(trioNormal);
+
+  const stats = {
+    championCode: champion,
+    league,
   };
+
+  statsController.createOrUpdateStats(stats, logId)
+    .then((doc) => {
+      statsDetailController.createOrUpdateStats(duoRankedStats, doc._id, constants.statsType.duoRanked);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
-const getChampionList = (recordSet) => {
-  const champList = [];
-  recordSet.forEach((record) => {
-    if (!champList.some(x => x.championCode === record.championcode)) {
-      champList.push({
-        championCode: record.championcode,
-        championName: utils.getChampionName(record.championcode),
-      });
-    }
-  });
-  return champList;
-};
+const processLeague2 = (recordSet, logId, league) => {
+  const championList = utils.getChampionList(recordSet);
 
-const getLeagueList = (recordSet) => {
-  const leagueList = [];
-  recordSet.forEach((record) => {
-    if (!leagueList.some(x => x === record.league)) {
-      leagueList.push(record.league);
-    }
-  });
-  return leagueList;
-};
-
-const processLeague = (recordSet, logId, champList, league) => {
-  const duoRanked = filterStats(recordSet, 2, true, league);
-  const duoNormal = filterStats(recordSet, 2, false, league);
-  const trioRanked = filterStats(recordSet, 3, true, league);
-  const trioNormal = filterStats(recordSet, 3, false, league);
-
-  champList.forEach((champ, i) => {
-    getChampionStats(champList, i, champ, 'duoRanked', duoRanked, league);
-    getChampionStats(champList, i, champ, 'duoNormal', duoNormal, league);
-    getChampionStats(champList, i, champ, 'trioRanked', trioRanked, league);
-    getChampionStats(champList, i, champ, 'trioNormal', trioNormal, league);
-    champ.league = league;
-  });
-
-  champList.forEach((champ) => {
-    statsController.createOrUpdateStats(champ, logId);
+  championList.forEach((champion) => {
+    processChampion(recordSet.filter(x => x.ChampionCode === champion)[0], logId, league, champion);
   });
 };
 
-const processResponse = (recordSet, logId) => {
-  const champList = getChampionList(recordSet);
-  const leagueList = getLeagueList(recordSet);
+const processResponse2 = (recordSet, logId) => {
+  const leagueList = utils.getLeagueList(recordSet);
 
   leagueList.forEach((league) => {
-    processLeague(recordSet, logId, JSON.parse(JSON.stringify(champList)), league);
+    processLeague2(recordSet.filter(x => x.League === league)[0], logId, league);
   });
 };
 
@@ -76,9 +69,9 @@ const insertStats = (query, logId) => {
     new sql.Request(dataConnection).query(query)
       .then((response) => {
         console.log(`process response ${query}`);
-        processResponse(response.recordset, logId);
-        logController.updateLog(logId);
-        resolve();
+        processResponse2(response.recordset, logId);
+        //logController.updateLog(logId);
+        //resolve();
       })
       .catch((err) => {
         if (err.code === 'EREQUEST') {
@@ -96,7 +89,7 @@ const insertStats = (query, logId) => {
 
 const initializeLog = (logType, year, month, day) => {
   return new Promise((resolve, reject) => {
-    const query = utils.getChampionWinrateQuery(logType, year, month, day);
+    const query = utils.getChampionStatsQuery(logType, year, month, day);
 
     logController.checkIfExists(logType)
       .then((log) => {
@@ -156,3 +149,46 @@ ontime({
 module.exports = {
   syncData,
 };
+
+/*
+const processResponse = (recordSet, logId) => {
+  const champList = getChampionList(recordSet);
+  const leagueList = getLeagueList(recordSet);
+
+  leagueList.forEach((league) => {
+    processLeague(recordSet, logId, JSON.parse(JSON.stringify(champList)), league);
+  });
+};
+
+const filterStats = (recordSet, teamSize, isRanked, league) => recordSet.filter(x => x.teamsize === teamSize && x.isranked === isRanked && x.league === league);
+
+const processLeague = (recordSet, logId, champList, league) => {
+  const duoRanked = filterStats(recordSet, 2, true, league);
+  const duoNormal = filterStats(recordSet, 2, false, league);
+  const trioRanked = filterStats(recordSet, 3, true, league);
+  const trioNormal = filterStats(recordSet, 3, false, league);
+
+  champList.forEach((champ, i) => {
+    getChampionStats(champList, i, champ, 'duoRanked', duoRanked, league);
+    getChampionStats(champList, i, champ, 'duoNormal', duoNormal, league);
+    getChampionStats(champList, i, champ, 'trioRanked', trioRanked, league);
+    getChampionStats(champList, i, champ, 'trioNormal', trioNormal, league);
+    champ.league = league;
+  });
+
+  champList.forEach((champ) => {
+    statsController.createOrUpdateStats(champ, logId);
+  });
+};
+
+const getChampionStats = (championList, i, champion, category, statsList) => {
+  const champ = statsList.filter(x => x.championcode === champion.championCode);
+  const victories = champ.filter(x => x.win === true);
+  const losses = champ.filter(x => x.win === false);
+  championList[i][category] = {
+    wins: victories.length === 0 ? 0 : victories[0].count,
+    losses: losses.length === 0 ? 0 : losses[0].count,
+  };
+};
+
+*/
