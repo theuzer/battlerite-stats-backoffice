@@ -1,38 +1,29 @@
 const Stats = require('../models/stats');
 
-exports.createStats = (stats, logId) => {
-  const newStats = new Stats();
-  newStats.championCode = stats.championCode;
-  newStats.league = stats.league;
-  newStats.log = logId;
-
-  newStats.save((err) => {
-    if (err) {
-      throw err;
-    }
-  });
-};
-
-exports.createOrUpdateStats = (stats, logId) => {
-  return new Promise((resolve, reject) => {
-    Stats.findOneAndUpdate(
-      { log: logId, championCode: stats.championCode, league: stats.league },
-      {
-        log: logId,
-        championCode: stats.championCode,
-        league: stats.league,
-        duoRanked: stats.duoRanked,
-        duoNormal: stats.duoNormal,
-        trioRanked: stats.trioRanked,
-        trioNormal: stats.trioNormal,
-      },
-      { upsert: true },
-      (err, doc) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(doc);
-      },
-    );
-  });
+exports.createOrUpdateStatsImproved = (timePeriod, league, mode, isRanked, championCode, stats, championName) => {
+  Stats.update(
+    {
+      timePeriod,
+      league,
+      mode,
+      isRanked,
+      championCode,
+    },
+    {
+      dateUpdated: Date.now(),
+      timePeriod,
+      league,
+      mode,
+      isRanked,
+      championCode,
+      championName,
+      stats,
+    },
+    { upsert: true },
+    (err) => {
+      if (err) {
+        console.log(err);
+      }
+    },
+  );
 };

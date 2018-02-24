@@ -1,22 +1,21 @@
 const iniparser = require('iniparser');
 
 const gameplay = require('../static/assets/gameplay.json');
-const constants = require('./constants');
 const queries = require('./queries');
 
 const english = iniparser.parseSync('./static/assets/English.ini');
 
 const getChampionName = championCode => english[gameplay.characters.filter(x => x.typeID === championCode)[0].name];
 
-const getChampionStatsQuery = (logType, year, month, day) => {
-  switch (logType) {
-    case constants.logType.allTime:
+const getChampionStatsQuery = (timePeriod, year, month, day) => {
+  switch (timePeriod) {
+    case 0:
       return queries.getChampionStatsAllTime;
-    case constants.logType.lastMonth:
+    case 1:
       return queries.getChampionStatsLastMonth(year, month, day);
-    case constants.logType.lastWeek:
+    case 2:
       return queries.getChampionStatsLastWeek(year, month, day);
-    case constants.logType.yesterday:
+    case 3:
       return queries.getChampionStatsYesterday(year, month, day);
     default:
       return queries.getChampionStatsAllTime;
