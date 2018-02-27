@@ -4,7 +4,7 @@ const https = require('https');
 
 require('./database/index');
 require('./syncData/syncPlayers');
-require('./syncData/syncStats');
+const syncStats = require('./syncData/syncStats');
 
 const port = process.env.PORT || 3000;
 
@@ -30,3 +30,8 @@ if (process.env.HEROKU_TIMER_CREATE === 'TRUE') {
     console.log('Pinged application');
   }, parseInt(process.env.HEROKU_APP_TIMER, 10));
 }
+
+app.get('/syncStats', (req, res) => {
+  syncStats.syncData();
+  res.send('sync stats');
+});

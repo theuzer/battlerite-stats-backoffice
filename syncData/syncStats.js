@@ -144,3 +144,7 @@ ontime({
   syncData();
   ot.done();
 });
+
+module.exports = {
+  syncData,
+};

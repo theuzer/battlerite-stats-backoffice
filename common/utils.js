@@ -6,6 +6,8 @@ const queries = require('./queries');
 const english = iniparser.parseSync('./static/assets/English.ini');
 
 const getChampionName = championCode => english[gameplay.characters.filter(x => x.typeID === championCode)[0].name];
+const getChampionIcon = championCode => gameplay.characters.filter(x => x.typeID === championCode)[0].icon;
+const getChampionSubname = championCode => english[gameplay.characters.filter(x => x.typeID === championCode)[0].title];
 
 const getChampionStatsQuery = (timePeriod, year, month, day) => {
   switch (timePeriod) {
@@ -29,6 +31,8 @@ const getChampionList = (recordSet) => {
       champList.push({
         championCode: record.ChampionCode,
         championName: getChampionName(record.ChampionCode),
+        championIcon: getChampionIcon(record.ChampionCode),
+        championSubname: getChampionSubname(record.ChampionCode),
       });
     }
   });
