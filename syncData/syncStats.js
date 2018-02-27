@@ -48,7 +48,7 @@ const processChampion = (championSet, timePeriod, mode, league, isRanked, champi
   stats.losses = losses;
   stats.winRate = stats.gamesCount === 0 ? 0 : wins / stats.gamesCount;
 
-  statsController.createOrUpdateStatsImproved(timePeriod, league, mode, isRanked, champion.championCode, stats, champion.championName);
+  statsController.createOrUpdateStatsImproved(timePeriod, league, mode, isRanked, champion, stats);
 };
 
 const processStats = (recordSet, timePeriod, mode, league, isRanked, champList) => {

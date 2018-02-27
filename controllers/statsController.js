@@ -1,13 +1,13 @@
 const Stats = require('../models/stats');
 
-exports.createOrUpdateStatsImproved = (timePeriod, league, mode, isRanked, championCode, stats, championName) => {
+exports.createOrUpdateStatsImproved = (timePeriod, league, mode, isRanked, champion, stats) => {
   Stats.update(
     {
       timePeriod,
       league,
       mode,
       isRanked,
-      championCode,
+      championCode: champion.championCode,
     },
     {
       dateUpdated: Date.now(),
@@ -15,8 +15,10 @@ exports.createOrUpdateStatsImproved = (timePeriod, league, mode, isRanked, champ
       league,
       mode,
       isRanked,
-      championCode,
-      championName,
+      championCode: champion.championCode,
+      championName: champion.championName,
+      championIcon: champion.championIcon,
+      championSubname: champion.championSubname,
       stats,
     },
     { upsert: true },

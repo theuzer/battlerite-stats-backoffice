@@ -25,8 +25,8 @@ const StatsSchema = new Schema({
   },
   championCode: Number,
   championName: String,
-  championIconId: String,
-  championTitle: String,
+  championIcon: String,
+  championSubname: String,
   stats: {
     wins: Number,
     losses: Number,
