@@ -17,6 +17,7 @@ const processPlayerCodes = (playerCodes) => {
         if (exists) {
           new sql.Request(dataConnection).query(queries.updatePlayerProcessed(playerCode.playerCode))
             .then(() => {
+              console.log(`Updated existing player. ID: ${playerCode.playerCode}.`);
             })
             .catch((err) => {
               console.log(err.code);
@@ -39,6 +40,7 @@ const doWork = (key, i) => {
           axios.get(url, header)
             .then((response) => {
               playerController.createPlayer(playerCode, response.data.data.attributes.name);
+              console.log(`Created player. ID: ${playerCode} and Name: ${response.data.data.attributes.name}.`);
               doWork(key, i + 1);
             })
             .catch((err) => {
@@ -57,17 +59,17 @@ const doWork = (key, i) => {
 };
 
 const initializeLog = () => {
-  console.log('Started retrieving players');
-  console.time('getDistinctPlayers');
+  console.log('Retrieving players: Start.');
+  console.time('RetrievingPlayers');
   new sql.Request(dataConnection).query(queries.getDistinctPlayers(parseInt(process.env.NUMBER_OF_PLAYERS, 10)))
     .then((response) => {
-      console.log(response.recordset.length);
-      console.timeEnd('getDistinctPlayers');
+      console.log(`Retrieving players: End. Got ${response.recordset.length} results.`);
+      console.timeEnd('RetrievingPlayers');
       processPlayerCodes(response.recordset);
     })
     .catch((err) => {
       console.log(err.code);
-      console.timeEnd('getDistinctPlayers');
+      console.timeEnd('RetrievingPlayers');
     });
 };
 
@@ -75,9 +77,8 @@ ontime({
   cycle: ['0'],
 }, (ot) => {
   initializeLog();
-  console.log('sync players');
   if (playerCodesQueue.length !== 0) {
-    console.log('length', playerCodesQueue.length);
+    console.log(`Sync queue has ${playerCodesQueue.length} players.`);
     const keys = [constants.api.keys.key1, constants.api.keys.key2, constants.api.keys.key3, constants.api.keys.key4, constants.api.keys.key5];
     for (let i = 0; i < keys.length; i++) {
       doWork(keys[i], 0);
