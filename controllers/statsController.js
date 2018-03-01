@@ -24,7 +24,7 @@ exports.createOrUpdateStatsImproved = (timePeriod, league, mode, isRanked, champ
     { upsert: true },
     (err) => {
       if (err) {
-        console.log(err);
+        console.log(7, err);
       }
     },
   );

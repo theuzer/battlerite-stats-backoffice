@@ -20,7 +20,7 @@ const processPlayerCodes = (playerCodes) => {
               console.log(`Updated existing player. ID: ${playerCode.playerCode}.`);
             })
             .catch((err) => {
-              console.log(err.code);
+              console.log(4, err.code);
             });
         } else {
           playerCodesQueue.push(playerCode.playerCode);
@@ -44,7 +44,7 @@ const doWork = (key, i) => {
               doWork(key, i + 1);
             })
             .catch((err) => {
-              console.log(err);
+              console.log(3, err.response.status);
               playerCodesQueue.push(playerCode);
             });
         } else {
@@ -52,7 +52,7 @@ const doWork = (key, i) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log(2, err);
         playerCodesQueue.push(playerCode);
       });
   }
@@ -68,7 +68,7 @@ const initializeLog = () => {
       processPlayerCodes(response.recordset);
     })
     .catch((err) => {
-      console.log(err.code);
+      console.log(1, err.code);
       console.timeEnd('RetrievingPlayers');
     });
 };

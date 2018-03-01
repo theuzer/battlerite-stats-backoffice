@@ -94,10 +94,10 @@ const insertStats = (query, timePeriod) => {
       })
       .catch((err) => {
         if (err.code === 'EREQUEST') {
-          console.log(err);
+          console.log(5, err);
           reject();
         } else if (err.code === 'ETIMEOUT') {
-          console.log(5, query);
+          console.log(6, query);
           setTimeout(() => {
             insertStats(query, timePeriod);
           }, 60000);
