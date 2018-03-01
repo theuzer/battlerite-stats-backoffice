@@ -20,6 +20,7 @@ exports.createPlayer = (playerCode, playerName) => {
   const newPlayer = new Player();
   newPlayer.playerCode = playerCode;
   newPlayer.playerName = playerName;
+  newPlayer.playerNameLower = playerName.toLowerCase();
 
   newPlayer.save((err) => {
     if (err) {
