@@ -24,7 +24,7 @@ exports.createPlayer = (playerCode, playerName) => {
 
   newPlayer.save((err) => {
     if (err) {
-      throw err;
+      console.log(99, playerCode, err);
     }
   });
 };
